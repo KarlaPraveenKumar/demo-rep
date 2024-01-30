@@ -21,7 +21,7 @@ function kidneymiddleware(req,res,next){
     next();
   }
 }
-
+// If we use app.use(expess().json()) then no need to use middle wares in side app.get
 app.get("/health-check",usermiddleware,kidneymiddleware,function(req,res){
   res.status(200).json({msg:"Healthy!"});
 });
