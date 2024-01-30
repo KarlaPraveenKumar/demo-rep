@@ -26,4 +26,9 @@ app.get("/health-check",usermiddleware,kidneymiddleware,function(req,res){
   res.status(200).json({msg:"Healthy!"});
 });
 
+//This is global cathecs, if there is any error below msg shows to the client.
+app.use(function(err,req,res,next){
+  res.status(500).json({msg: "Some thing wrong with the server"});
+});
+
 app.listen(3000);
