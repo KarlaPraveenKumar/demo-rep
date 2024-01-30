@@ -23,4 +23,24 @@ app.post("/health-check",function(req,res){
   })
 });*/
 
+// Gmail and Password validations
+const zod = require("zod");
+
+function validateInput(obj){
+  const schema = zod.object({
+    email: zod.string().email(),
+    password: zod.string().min(8)
+  });
+
+  const response = schema.safeParse(obj);
+  console.log(response);
+}
+validateInput({
+  email: "131789praveen@gmail.com",
+  password: "password"
+});
+
+
+
+
 app.listen(3000);
