@@ -1,0 +1,73 @@
+const express = require("express");
+const app = express();
+app.use(express.json());
+const jwt = require("jsonwebtoken");
+const jswtPassword = "123456"
+
+const all_users = [
+  {
+    username : "hello123@gmail.com",
+    password : "123",
+    name : "hello",
+  },
+  {
+    username : "hithere123@gmail.com",
+    password : "456",
+    name : "hithere",
+  },
+  {
+    username : "howareyou@gmail.com",
+    password : "789",
+    name : "howareyou"
+  }
+];
+
+function userexists(username,password){
+  let userexist = false;
+  for(let i=0;i<all_users.length;i++){
+    if(all_users[i].username === username && all_users[i].password === password){
+      userexist = true;
+    }
+  }
+  return userexist;
+}
+/*function userexists(username,password){
+  return all_users.find(user => user.username === username && user.password === password) !== undefined;
+}*/
+
+
+app.post("/signin",function(req,res){
+  const username = req.body.username;
+  const password = req.body.password;
+
+  if(!(userexists(username,password))){
+    return res.status(403).json({
+      msg : "User doesn't exist in our memory db!"
+    });
+  }
+  else{
+    let token = jwt.sign({username : username},jswtPassword);
+    return res.json({
+      token,
+    });
+  }
+});
+
+app.get("/users",function(req,res){
+  const token = req.headers.authorization;
+  const decoded = jwt.verify(token, jswtPassword);
+  const username = decoded.username;
+  res.json({
+    users : all_users.filter(function(value){
+      if(value.username == username){
+        return false;
+      }else{
+        return true;
+      }
+    })
+  });
+});
+
+
+app.listen(3000);
+
